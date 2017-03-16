@@ -1,0 +1,145 @@
+#!/bin/sh 
+
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+svc_t_init()
+############
+{
+    NOOP=NOOP
+}
+
+svc_t_toolname()
+################
+{
+    echo "dbsrv"`get_major_version`
+}
+
+svc_t_toolspath()
+#################
+# can look at $BITNESS, $BIN32, etc. here to override bitness
+# 's' path is the script or shortcut path for this tool
+{
+    echo $SQLANYDIR/${BIN}s/`svc_t_toolname`
+}
+
+svc_t_toolpath()
+################
+# can look at $BITNESS, $BIN32, etc. here to override bitness
+{
+    echo $SQLANYDIR/$BIN/`svc_t_toolname`
+}
+
+svc_t_has_servername()
+######################
+{
+    true
+}
+
+svc_t_need_servername()
+#######################
+{
+    true
+}
+
+svc_t_get_servername_from_cmdline()
+###################################
+{
+    while [ ! -z "$1" ]; do
+	case $1 in
+	    -n )
+		echo $2
+		return
+		;;
+	esac
+	shift
+    done
+}
+
+svc_t_process_cmdline()
+#######################
+# in: cmdline
+# out: add -ud if not already there
+# out: (global) $SERVERNAME is set
+{
+    local MY_CMDLINE=`svc_t_process_cmdline_add_ud $*`
+
+    while [ ! -z "$1" ]; do
+	case $1 in
+	    -n )
+		# servername is first parm to first -n 
+		[ -z "$SERVERNAME" ] && SERVERNAME=$2
+		;;
+	esac
+	shift
+    done
+
+    # validation: unset SERVERNAME if it looks like another switch
+    if [ -n "$SERVERNAME" ]; then
+	TEST_SN=`echo $SERVERNAME | grep "^-"`
+	[ -n "$TEST_SN" ] && SERVERNAME=""
+    fi
+
+    echo "$MY_CMDLINE"
+}
+
+svc_t_process_servername()
+##########################
+# in: cmdline
+# out: servername
+{
+    local MY_CMDLINE=$*
+
+    while [ ! -z "$1" ]; do
+	case $1 in
+	    -n )
+		# servername is first parm to first -n 
+		[ -z "$SERVERNAME" ] && SERVERNAME=$2
+		;;
+	    @* )
+		# process parms in env variable or file
+		local parm=$1
+		parm=`echo $parm | sed -e "s/^@//"`
+		local parme="\$${parm}"
+		local parmeval=`eval echo ${parme}`
+		local process_args
+		if [ "${parmeval}" != "" ]; then
+		    # add contents of env. var. too
+		    process_args=${parmeval}
+		elif [ -r ${parm} ]; then
+		    process_args=`cat ${parm}`
+		fi
+		for arg in "$process_args"; do
+		    case $arg in
+			-n )
+			# servername is first parm to first -n 
+			[ -z "$SERVERNAME" ] && SERVERNAME=$2
+			;;
+		    esac
+		done
+		;;
+	esac
+	shift
+    done
+
+    # validation: unset SERVERNAME if it looks like another switch
+    if [ -n "$SERVERNAME" ]; then
+	TEST_SN=`echo $SERVERNAME | grep "^-"`
+	[ -n "$TEST_SN" ] && SERVERNAME=""
+    fi
+
+    if svc_t_need_servername; then
+        [ -z "$SERVERNAME" ] && output_msg "${ERR_REQDASHN}" >&2
+    fi
+
+    echo "$SERVERNAME"
+}
+
+# Most tools check status by verifying the process is still running
+# We can do a bit better with dbping
+# svc_t_status()
+# {
+#     "$SQLANYDIR/$BIN/dbping" -c "eng=${SERVERNAME}" -q  2>/dev/null >/dev/null
+#     echo $?
+# }

@@ -1,0 +1,86 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+##Note to translator do not translate "SQL Anywhere", "$SERVICENAME" or "$DBSVC_TYPE"  on any occurrence within the file.
+
+#ERROR MESSAGES
+ERR_PERMMOD="Vous ne disposez pas de l'autorisation de gérer les services."
+ERR_AWK="Cet outil requiert l'utilitaire \"awk\"."
+ERR_GREP="Cet outil requiert l'utilitaire \"grep\"."
+ERR_TAIL="Cet outil requiert l'utilitaire \"tail\"."
+ERR_TR="Cet outil requiert l'utilitaire \"tr\"."
+ERR_SED="Cet outil requiert une version plus récente de l'utilitaire \"sed\"."
+ERR_INVALIDCMD="Ligne de commande incorrecte."
+ERR_NOACCOUNT="Aucune information sur le compte n'a été fournie."
+ERR_NODELETE="Impossible de supprimer le service \\$SERVICENAME. \$SERVICENAME."
+
+##Note to translator do not translate "DBMLSync" or "DBRemote" on the next line
+ERR_REQDASHO="DBRemote et DBMLsync nécessitent -ot ou -o pour s'exécuter comme des services"
+ERR_REQDASHN="dbsvc nécessite que les services Personal et Network indiquent le nom du serveur à l'aide de l'option -n"
+ERR_REQDASHZS="dbsvc nécessite que les services MobiLink indiquent le nom du serveur à l'aide de l'option -zs"
+ERR_INVALIDSTARTUP="Option de démarrage incorrecte"
+ERR_UNRECOGNIZED_OPTION="Option non reconnue"
+ERR_NOENVIRONMENT="Erreur : l'environnement SQL Anywhere $SQLANYVAR n'est pas défini."
+ERR_INVALIDTYPE="Type de service incorrect."
+ERR_NOSERVICENAME="Veuillez indiquer le nom du service"
+
+##Note to translator do not translate "/lib/lsb/init-functions" on the next line
+ERR_EXPECTINGFILES="Cet utilitaire nécessite /lib/lsb/init-functions"
+
+##Note to translator do not translate "chkconfig" on the next line
+ERR_NOCHKCONFIG="Ce démarrage de type automatique nécessite l'utilitaire chkconfig"
+
+#INFORMATIONAL MESSAGES
+
+##Note to translator do not translate "$PREFIX$SERVICENAME" on the next line
+INF_CREATING="Création du service SQL Anywhere : \$SERVICENAME  Fichier : \$PREFIX\$SERVICENAME"
+INF_NOSERVICE="Services introuvables."
+
+INF_NOSERVICENAME="Aucun service nommé \"\$SERVICENAME\" n'a été trouvé."
+INF_NOACTION="Aucune action n'est exigée."
+INF_NOFILEFORSERVICE="Avertissement : le fichier de base de données n'existe pas"
+INF_NOUSER="Avertissement : l'utilisateur Linux n'existe pas"
+
+##Note to translator do not translate "ODBC.INI" on the next line
+INF_NOODBCINIEXIST="Avertissement : ODBC.INI n'existe pas. Les services nécessitant une source de données échoueront."
+INF_WARNSVCWITHDASH="Avertissement : le nom de votre service commence par un tiret (-) ; est-ce correct ?"
+INF_WARNINGDEPENDENT="Avertissement : service dépendant introuvable"
+
+##Note to translator do not translate "${TYPE}" on the next line
+INF_BINARYNOTFOUND="Avertissement : l'exécutable requis pour le type de service \"\${DBSVC_TYPE}\" n'est pas installé dans l'environnement en cours"
+
+#Non-Utility Messages
+
+INF_STARTING="Démarrage du service SQL Anywhere de type \"${DBSVC_TYPE}\" : $SERVICENAME"
+INF_STOPPING="Arrêt du service SQL Anywhere de type \"${DBSVC_TYPE}\" : $SERVICENAME"
+INF_NOTRUNNING="Le service SQL Anywhere $SERVICENAME de type  \"${DBSVC_TYPE}\" n'est pas en cours d'exécution."
+INF_RUNNING="Le service SQL Anywhere $SERVICENAME de type  \"${DBSVC_TYPE}\" est en cours d'exécution."
+INF_CHECKING_OK="Vérification du service SQL Anywhere : $SERVICENAME est en cours d'exécution"
+INF_CHECKING_NF="Vérification du service SQL Anywhere : $SERVICENAME n'est pas en cours d'exécution"
+INF_CHECKING_UNKNOWN="Vérification du service SQL Anywhere : erreur inconnue"
+
+##Note to translator do not translate "{start|stop|restart|status}" on the next line
+INF_USAGE="Syntaxe : $dbsvc {start|stop|restart|status}"
+INF_ALREADYRUNNING="Le service SQL Anywhere $SERVICENAME est déjà en cours d'exécution"
+
+
+#RPOMPT MESSAGES
+PRMPT_OVERWRITE="Souhaitez-vous remplacer le service \"\$SERVICENAME\" "
+PRMPT_DELETE="Souhaitez-vous supprimer le service \"\$SERVICENAME\" "
+
+# YES/NO Question
+MSG_PROMPT_YES_NO="[O/n] :  "
+MSG_PROMPT_NO_YES="[N/o] :  "
+
+MSG_ANSWER_Yes="Oui"
+MSG_ANSWER_yes="oui"
+MSG_ANSWER_Y="O"
+MSG_ANSWER_y="o"
+
+#COPYRIGHT and BANNER
+
+CPYRIGHT1="Copyright (c) 2013 SAP AG ou société affiliée SAP. Tous droits réservés."
+CPYRIGHT2=""
+CPYRIGHT3=""
+
+BANNER="SQL Anywhere - Utilitaire de services"

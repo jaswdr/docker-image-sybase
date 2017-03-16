@@ -1,0 +1,86 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+##Note to translator do not translate "SQL Anywhere", "$SERVICENAME" or "$DBSVC_TYPE"  on any occurrence within the file.
+
+#ERROR MESSAGES
+ERR_PERMMOD="您没有管理服务的权限。"
+ERR_AWK="此工具需要 \"awk\" 实用程序。"
+ERR_GREP="此工具需要 \"grep\" 实用程序。"
+ERR_TAIL="此工具需要 \"tail\" 实用程序。"
+ERR_TR="此工具需要 \"tr\" 实用程序。"
+ERR_SED="此工具需要 \"sed\" 实用程序更新的版本。"
+ERR_INVALIDCMD="无效的命令行。"
+ERR_NOACCOUNT="未提供帐户信息。"
+ERR_NODELETE="无法删除服务: \$SERVICENAME。"
+
+##Note to translator do not translate "DBMLSync" or "DBRemote" on the next line
+ERR_REQDASHO="DBRemote 和 DBMLsync 要求 -ot 或 -o 作为服务运行"
+ERR_REQDASHN="dbsvc 需要 Personal 和 Network 服务指定 -n 来命名服务器"
+ERR_REQDASHZS="dbsvc 需要 MobiLink 服务指定 -zs 来命名服务器"
+ERR_INVALIDSTARTUP="无效的启动选项"
+ERR_UNRECOGNIZED_OPTION="无法识别的选项"
+ERR_NOENVIRONMENT="错误: SQL Anywhere 环境变量 $SQLANYVAR 未设置。"
+ERR_INVALIDTYPE="无效的服务类型"
+ERR_NOSERVICENAME="请指定服务名"
+
+##Note to translator do not translate "/lib/lsb/init-functions" on the next line
+ERR_EXPECTINGFILES="此实用程序需要 /lib/lsb/init-functions"
+
+##Note to translator do not translate "chkconfig" on the next line
+ERR_NOCHKCONFIG="此启动类型自动需要 chkconfig 实用程序"
+
+#INFORMATIONAL MESSAGES
+
+##Note to translator do not translate "$PREFIX$SERVICENAME" on the next line
+INF_CREATING="正在创建 SQL Anywhere 服务: \$SERVICENAME 文件: \$PREFIX\$SERVICENAME"
+INF_NOSERVICE="找不到服务。"
+
+INF_NOSERVICENAME="找不到名为 \"\$SERVICENAME\" 的服务。"
+INF_NOACTION="未请求操作。"
+INF_NOFILEFORSERVICE="警告: 数据库文件不存在"
+INF_NOUSER="警告: Linux 用户不存在"
+
+##Note to translator do not translate "ODBC.INI" on the next line
+INF_NOODBCINIEXIST="警告: ODBC.INI 不存在。依靠数据源的服务将失败。"
+INF_WARNSVCWITHDASH="警告: 您的服务名以 '-' 开始，您是否计划这样做？"
+INF_WARNINGDEPENDENT="警告: 找不到相关服务"
+
+##Note to translator do not translate "${TYPE}" on the next line
+INF_BINARYNOTFOUND="警告: 当前环境中未安装服务类型 \"\${DBSVC_TYPE}\" 所需的可执行文件"
+
+#Non-Utility Messages
+
+INF_STARTING="正在启动 SQL Anywhere \"${DBSVC_TYPE}\" 服务:$SERVICENAME"
+INF_STOPPING="正在停止 SQL Anwyhere \"${DBSVC_TYPE}\" 服务: $SERVICENAME"
+INF_NOTRUNNING="SQL Anywhere \"${DBSVC_TYPE}\" 服务 $SERVICENAME 未运行。"
+INF_RUNNING="SQL Anywhere \"${DBSVC_TYPE}\" 服务 $SERVICENAME 正在运行。"
+INF_CHECKING_OK="正在检查 SQL Anywhere 服务: $SERVICENAME 正在运行"
+INF_CHECKING_NF="正在检查 SQL Anywhere 服务: $SERVICENAME 未运行"
+INF_CHECKING_UNKNOWN="正在检查 SQL Anywhere 服务: 未知错误"
+
+##Note to translator do not translate "{start|stop|restart|status}" on the next line
+INF_USAGE="用法: $dbsvc {start|stop|restart|status}"
+INF_ALREADYRUNNING="SQL Anywhere 服务 $SERVICENAME 已在运行"
+
+
+#RPOMPT MESSAGES
+PRMPT_OVERWRITE="是否覆盖服务 \"\$SERVICENAME\" "
+PRMPT_DELETE="是否删除服务 \"\$SERVICENAME\" "
+
+# YES/NO Question
+MSG_PROMPT_YES_NO="[Y/n]: "
+MSG_PROMPT_NO_YES="[N/y]: "
+
+MSG_ANSWER_Yes="是"
+MSG_ANSWER_yes="是"
+MSG_ANSWER_Y="Y"
+MSG_ANSWER_y="y"
+
+#COPYRIGHT and BANNER
+
+CPYRIGHT1="版权所有 (c) 2013 SAP 股份公司或其关联公司版权所有。保留所有权利。"
+CPYRIGHT2=""
+CPYRIGHT3=""
+
+BANNER="SQL Anywhere 服务实用程序"

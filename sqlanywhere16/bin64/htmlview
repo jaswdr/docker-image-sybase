@@ -1,0 +1,166 @@
+#!/bin/bash
+#
+# Invoke HTML viewer
+# Usage:
+#	htmlview [URL]
+#
+# WARNING: Deprecated Script
+# This script will be replaced in the future when something better is implemented.
+#
+# v3.0.0
+# ------
+# If DISPLAY is set and gnome-open exists, mimic gnome-open behavior to launch 
+# preferred browser.  Due to MIME associations, gnome-open cannot be directly 
+# called to view files from htmlview because it will go into an infinite loop.
+# text/html associated with htmlview runs mimic_gnome_open, which Just Works.
+# (Otherwise fallback to old htmlview behavior.)
+#
+#   ~/.htmlviewrc and /etc/htmlview.conf.
+#   Users may define the TEXTBROWSER variable to
+#   indicate their preference for old htmlview.
+#
+#   /usr/bin/gnome-default-applications-properties
+#   Please use the Preferred Application chooser
+#   for all other configuration options.
+#
+# written by Bernhard Rosenkraenzer <bero@redhat.com>
+# changed by Warren Togami <wtogami@redhat.com>
+# (c) 2000-2004 Red Hat, Inc.
+#
+# This script is in the public domain.
+
+error_dialog() {
+    echo "$1"
+    if [ -x /usr/bin/zenity ]; then
+        /usr/bin/zenity --error --text="$1"
+    else
+        xmessage "$1"
+    fi
+}
+
+mimic_gnome_open() {
+    NEEDTERM=$(gconftool-2 -g /desktop/gnome/url-handlers/http/needs_terminal 2>/dev/null | sed -e 's/^\ *//; s/\ *$//')
+    # Check if text-mode browser
+    if [ "$NEEDTERM" == "true" ]; then
+        PREFTERM=$(gconftool-2 -g /desktop/gnome/applications/terminal/exec 2>/dev/null | sed -e 's/^\ *//; s/\ *$//')
+        TERMARGS=$(gconftool-2 -g /desktop/gnome/applications/terminal/exec_arg 2>/dev/null | sed -e 's/^\ *//; s/\ *$//')
+        # Check if terminal exists
+        if ! exists "$PREFTERM"; then
+            error_dialog "ERROR: The terminal $PREFTERM does not exist.  Please reconfigure."
+            [ -x /usr/bin/gnome-default-applications-properties ] && exec /usr/bin/gnome-default-applications-properties
+            exit 1
+        fi
+        # Special case: w3m
+	[ "$GCONF" = "w3m" ] && GCONF="w3m -v"
+        # Run text-mode browser
+        if [ -z $1 ]; then
+            exec $PREFTERM $TERMARGS $GCONF
+        else
+            exec $PREFTERM $TERMARGS $GCONF "$1"
+        fi
+    fi
+    
+    # Check if GUI browser exists
+    if ! exists "$GCONF"; then
+        error_dialog "ERROR: The browser $GCONF does not exist.  Please reconfigure."
+        [ -x /usr/bin/gnome-default-applications-properties ] && exec /usr/bin/gnome-default-applications-properties
+        exit 1
+    fi
+    # Special case: konqueror without arguments
+    if [ "$GCONF" = "konqueror" ] && [ -z $1 ]; then
+        GCONF="konqueror about:konqueror"
+    fi
+
+    # Run GUI browser
+    if [ -z $1 ]; then
+        exec $GCONF
+    else
+        exec $GCONF "$1"
+    fi
+}
+
+sanity_check() {
+	unset INVALID
+	echo "$1" | grep -q "htmlview" && INVALID="yes"
+	echo "$1" | grep -q "gnome-open" && INVALID="yes"
+	if [ "$INVALID" == "yes" ]; then
+		error_dialog "$1 is an invalid browser.  Please reconfigure."
+		[ -x /usr/bin/gnome-default-applications-properties ] && exec /usr/bin/gnome-default-applications-properties
+		exit 1
+	fi
+}
+
+exists() {
+    which "${1%% *}" 2> /dev/null > /dev/null
+    return $?
+}
+
+# ignore legacy cruft
+if [ "$1" == "--remote" ]; then
+	shift
+elif [ "$1" == "--local" ]; then
+	shift
+fi
+
+# Read GNOME configuration
+if [ -x /usr/bin/gconftool-2 ]; then
+	# Pull key from gconf, remove %s or "%s", trim leading & trailing spaces
+	GCONF=$(gconftool-2 -g /desktop/gnome/url-handlers/http/command 2>/dev/null | sed -e 's/%s//; s/\"\"//; s/^\ *//; s/\ *$//')
+
+	# sanity check (prevent infinite loops)
+	sanity_check "$GCONF"
+
+	# GNOME 2.4+ mimic gnome-open behavior to launch browser
+	if [ ! -z $DISPLAY ] &&  [ -x /usr/bin/gnome-open ]; then
+		mimic_gnome_open "$*"
+	fi
+fi
+
+# Fallback to old htmlview
+unset BROWSER CONSOLE TERMS_KDE TERMS_GNOME TERMS_GENERIC
+[ -e /etc/htmlview.conf ] && source /etc/htmlview.conf
+[ -e ~/.htmlviewrc ] && source ~/.htmlviewrc
+
+TERMS_KDE="/usr/bin/konsole /usr/bin/kvt"
+TERMS_GNOME="/usr/bin/gnome-terminal"
+TERMS_GENERIC="/usr/bin/rxvt /usr/X11R6/bin/xterm /usr/bin/Eterm"
+TTYBROWSERS="/usr/bin/links /usr/bin/lynx /usr/bin/w3m"
+X11BROWSERS_KDE="/usr/bin/konqueror /usr/bin/kfmbrowser"
+X11BROWSERS_GNOME="/usr/bin/mozilla /usr/bin/epiphany /usr/bin/galeon"
+X11BROWSERS_GENERIC="/usr/bin/mozilla /usr/bin/netscape"
+
+if [ "x`/sbin/pidof gnome-session`" != "x" ]; then
+	X11BROWSERS="$GCONF $X11BROWSERS_GENERIC $X11BROWSERS_GNOME $X11BROWSERS_KDE"
+	TERMS="$CONSOLE $TERMS_GENERIC $TERMS_GNOME $TERMS_KDE"
+else
+	X11BROWSERS="$X11BROWSERS_GENERIC $X11BROWSERS_KDE $X11BROWSERS_GNOME"
+	TERMS="$CONSOLE $TERMS_GENERIC $TERMS_KDE $TERMS_GNOME"
+fi
+[ -n "$X11BROWSER" ] && X11BROWSERS="$X11BROWSER $X11BROWSERS"
+[ -n "$TEXTBROWSER" ] && TTYBROWSERS="$TEXTBROWSER $TTYBROWSERS"
+[ -n "$CONSOLE" ] && TERMS="$CONSOLE $TERMS"
+
+if test "x$DISPLAY" = x; then
+	for i in $TTYBROWSERS; do
+		if exists $i; then
+			exec $i $*
+		fi
+	done
+	echo $"No valid text mode browser found."
+	exit 1
+else
+	for i in $X11BROWSERS; do
+		exists $i && exec $i $*
+	done
+	for i in $TERMS; do
+		if exists $i; then
+			CONSOLE="$i -e"
+			break
+		fi
+	done
+	for i in $TTYBROWSERS; do
+		exists $i && exec $CONSOLE $i $*
+	done
+	echo $"No valid browser found."
+	exit 1
+fi

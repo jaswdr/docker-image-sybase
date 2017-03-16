@@ -1,0 +1,181 @@
+#!/bin/sh 
+
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+#
+# provide boiler-plate start/stop/status/restart for the generated service script
+# all required vars should be set in script
+#
+
+parse_cl_options_svc()
+######################
+{
+    case "$1" in
+	start | stop | restart )
+	    ACTION=$1
+	    ;;
+	status )
+	    ACTION=sa_status
+	    ;;
+  	* )
+	    echo "${INF_USAGE}"
+	    exit 1
+	    ;;
+    esac
+}
+
+#
+# Implementation of start, stop, status, restart
+#
+
+start()
+#######
+{
+    local cmd="`svc_t_toolspath` ${SVC_TOOL_CMDLINE}"
+    local status=`svc_t_status`
+    local sd_cmd=$START_DAEMON
+    local pr_num=${PRIORITY##[-+]}
+    local pr_sign=${PRIORITY%%[0-9]*}
+
+    [ -z $pr_sign ] && pr_sign="+"
+
+    if [ $status -eq 0 ]; then 
+	$LOG_WARNING_MSG "${INF_ALREADYRUNNING}"
+	exit 0
+    fi
+    echo "${INF_STARTING}"
+
+    if is_redhat; then
+	export NICELEVEL="$PRIORITY"
+	if [ "$ACCOUNT" != "daemon" ]; then
+	    . /etc/init.d/functions
+	    sd_cmd="daemon --user $ACCOUNT"
+	fi
+	$sd_cmd $cmd
+    elif is_suse; then
+	# leading -/+ required
+	local pr=${pr_sign}${pr_num}
+	# Can't use "bin32s" wrapper with startproc
+	cmd="`svc_t_toolpath` ${SVC_TOOL_CMDLINE}"
+
+	if [ "$ACCOUNT" != "daemon" ]; then
+	    sd_cmd="$sd_cmd -n $pr -u $ACCOUNT"
+	else
+	    sd_cmd="$sd_cmd -n $pr"
+	fi
+	$sd_cmd $cmd
+    elif is_ubuntu; then
+	local nice_cmd=""
+	if [ "$ACCOUNT" != "daemon" ]; then
+	    sd_cmd="sudo -u $ACCOUNT"
+	    $sd_cmd $cmd
+	    if [ $? -eq 0 ]; then
+		sudo renice $PRIORITY `svc_t_getpid` 2>&1 >/dev/null
+	    fi
+	else
+	    # prepend nice command if necessary
+	    if [ `eval expr "$pr_num + 0"` != 0 ]; then
+	        nice_cmd="-n $PRIORITY"
+	    fi
+            $sd_cmd $nice_cmd $cmd
+	fi
+    else
+	# this case will get used for RedFlag
+	local nice_cmd=""
+	if [ "$ACCOUNT" != "daemon" ]; then
+	    sd_cmd="su $ACCOUNT -c"
+	else
+	    sd_cmd="su -c"
+	fi
+	# prepend nice command if necessary
+	if [ `eval expr "$pr_num + 0"` != 0 ]; then
+	    nice_cmd="nice -n $PRIORITY"
+	fi
+        $sd_cmd "$nice_cmd $cmd"
+    fi
+
+    # Check if we really started; in some cases the tool will be successfully launched,
+    # but an error will occur on startup.  On RedHat, "runuser" swallows the return
+    # code in this case.  Work around this my checking status after starting.
+    # This also help customers who have inadvertently given an incorrect command line,
+    # since when starting the service they will not see any error messages in the 
+    # terminal.
+    local retcode=$?
+    status=`svc_t_status`
+    [ $status -ne 0 ] && retcode=$status
+
+    if [ $retcode -eq 0 ]; then
+	$LOG_SUCCESS_MSG
+	if [ "$PIDFILEN" != "" ]; then
+	    # record the pid of the process that we just started
+	    sudo echo `svc_t_getpid` >$PIDFILEN 2>/dev/null
+	fi
+	return 0
+    else
+	$LOG_FAILURE_MSG
+	if [ "$PIDFILEN" != "" ]; then
+	    # if there was a pid file, get rid of it
+	    if [ -f "$PIDFILEN" ]; then
+		sudo rm -f $PIDFILEN 2>/dev/null
+	    fi
+	fi
+	return 1
+    fi
+} # start
+
+stop()
+######
+{
+    local status=`svc_t_status`
+
+    if [ $status -ne 0 ]; then 
+	$LOG_WARNING_MSG "${INF_NOTRUNNING}"
+	exit 0
+    fi
+    echo "${INF_STOPPING}"
+    if [ "$PIDFILEN" != "" ]; then
+	# if there was a pid file, get rid of it
+	if [ -f "$PIDFILEN" ]; then
+	    sudo rm -f $PIDFILEN 2>/dev/null
+	fi
+    fi
+    svc_t_stopcmd
+    if [ $? -eq 0 ]; then
+	$LOG_SUCCESS_MSG
+	return 0
+    else
+	$LOG_FAILURE_MSG
+	return 1
+    fi
+} # stop
+
+sa_status()
+###########
+{
+    local status=`svc_t_status`
+
+    if [ $status -ne 0 ]; then 
+	$LOG_WARNING_MSG "${INF_CHECKING_NF}"
+	if [ "$PIDFILEN" != "" ]; then
+	    # if there was a pid file, get rid of it
+	    if [ -f "$PIDFILEN" ]; then
+		sudo rm -f $PIDFILEN 2>/dev/null
+	    fi
+	fi
+    else
+	$LOG_SUCCESS_MSG "${INF_CHECKING_OK}"
+    fi
+    return $status
+} # sa_status
+
+restart()
+#########
+{
+    stop
+    sleep 5
+    start
+
+    return $?
+}

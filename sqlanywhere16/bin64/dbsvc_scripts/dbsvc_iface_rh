@@ -1,0 +1,65 @@
+#!/bin/sh 
+
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+dbsvc_iface_init_rh()
+#####################
+{
+    RUNLEVEL="35"
+    [ -z "$PRIORITY" ] && PRIORITY="+00"
+    STARTUP="Manual"
+    SVCDIR=/etc/init.d
+    PREFIX=${SVCDIR}/${SVCNAME_PFX}
+}
+
+unalias start_daemon 2>/dev/null
+start_daemon () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_start_daemon "$@"
+}
+
+unalias killproc 2>/dev/null
+killproc () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_killproc "$@"
+}
+
+unalias pidofproc 2>/dev/null
+pidofproc () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_pidofproc "$@"
+}
+
+unalias log_success_msg 2>/dev/null
+log_success_msg () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_log_message success "$@"
+}
+
+unalias log_failure_msg 2>/dev/null
+log_failure_msg () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_log_message failure "$@"
+}
+
+unalias log_warning_msg 2>/dev/null
+log_warning_msg () {
+    local lsb_prefix
+    [ -r /etc/asianux-lsb ] && lsb_prefix=/etc/asianux-lsb
+    [ -r /etc/redhat-lsb ] && lsb_prefix=/etc/redhat-lsb
+    $lsb_prefix/lsb_log_message warning "$@"
+}
+
+

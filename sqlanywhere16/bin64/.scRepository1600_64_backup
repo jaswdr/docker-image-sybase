@@ -1,0 +1,40 @@
+#  Version: 16.0.0.2043
+#  Tue Mar 07 11:29:49 UTC 2017
+#
+ConnectionProfiles/SQL Anywhere 16 Demo/Name=SQL Anywhere 16 Demo
+ConnectionProfiles/SQL Anywhere 16 Demo/FirstTimeStart=false
+ConnectionProfiles/SQL Anywhere 16 Demo/Description=Connection Profile for SQL Anywhere 16 Demo database
+ConnectionProfiles/SQL Anywhere 16 Demo/ProviderId=sqlanywhere1600
+ConnectionProfiles/SQL Anywhere 16 Demo/Provider=SQL Anywhere 16
+ConnectionProfiles/SQL Anywhere 16 Demo/Data/ConnectionProfileSettings=DSN\eSQL^0020Anywhere^002016^0020Demo;UID\eDBA;PWD\e35c624d517fb
+ConnectionProfiles/SQL Anywhere 16 Demo/Data/ConnectionProfileName=SQL Anywhere 16 Demo
+ConnectionProfiles/SQL Anywhere 16 Demo/Data/ConnectionProfileType=SQL Anywhere
+#
+#
+#
+SCRepositoryInfo/Version=4
+#
+Providers/mobilink1600/Version=
+Providers/mobilink1600/UseClassloader=true
+Providers/mobilink1600/GrantStatements=
+Providers/mobilink1600/ClassloaderId=SA1600
+Providers/mobilink1600/Classpath=\_opt\_sqlanywhere16\_java\_mlplugin.jar
+Providers/mobilink1600/Name=mlplugin.jar
+Providers/mobilink1600/AdditionalClasspath=\_opt\_sqlanywhere16\_java\_isql.jar:\_opt\_sqlanywhere16\_java\_salib.jar:\_opt\_sqlanywhere16\_java\_JComponents1600.jar:\_opt\_sqlanywhere16\_java\_jlogon.jar:\_opt\_sqlanywhere16\_java\_mldesign.jar:\_opt\_sqlanywhere16\_java\_jodbc4.jar:\_opt\_sqlanywhere16\_java\_stax-api-1.0.jar:\_opt\_sqlanywhere16\_java\_wstx-asl-3.2.6.jar:\_opt\_sqlanywhere16\_java\_velocity-1.7-dep.jar
+Providers/mobilink1600/Provider=com.sybase.mobilink.plugin.MLPlugin
+Providers/mobilink1600/ProviderId=mobilink1600
+Providers/mobilink1600/InitialLoadOrder=2
+#
+Providers/sqlanywhere1600/Version=
+Providers/sqlanywhere1600/UseClassloader=true
+Providers/sqlanywhere1600/GrantStatements=
+Providers/sqlanywhere1600/Classpath=\_opt\_sqlanywhere16\_java\_saplugin.jar
+Providers/sqlanywhere1600/ClassloaderId=SA1600
+Providers/sqlanywhere1600/Name=saplugin.jar
+Providers/sqlanywhere1600/AdditionalClasspath=\_opt\_sqlanywhere16\_java\_isql.jar:\_opt\_sqlanywhere16\_java\_salib.jar:\_opt\_sqlanywhere16\_java\_JComponents1600.jar:\_opt\_sqlanywhere16\_java\_jlogon.jar:\_opt\_sqlanywhere16\_java\_debugger.jar:\_opt\_sqlanywhere16\_java\_jodbc4.jar:\_opt\_sqlanywhere16\_java\_batik-anim.jar:\_opt\_sqlanywhere16\_java\_batik-awt-util.jar:\_opt\_sqlanywhere16\_java\_batik-bridge.jar:\_opt\_sqlanywhere16\_java\_batik-codec.jar:\_opt\_sqlanywhere16\_java\_batik-css.jar:\_opt\_sqlanywhere16\_java\_batik-dom.jar:\_opt\_sqlanywhere16\_java\_batik-ext.jar:\_opt\_sqlanywhere16\_java\_batik-extension.jar:\_opt\_sqlanywhere16\_java\_batik-gui-util.jar:\_opt\_sqlanywhere16\_java\_batik-gvt.jar:\_opt\_sqlanywhere16\_java\_batik-parser.jar:\_opt\_sqlanywhere16\_java\_batik-script.jar:\_opt\_sqlanywhere16\_java\_batik-svg-dom.jar:\_opt\_sqlanywhere16\_java\_batik-svggen.jar:\_opt\_sqlanywhere16\_java\_batik-swing.jar:\_opt\_sqlanywhere16\_java\_batik-transcoder.jar:\_opt\_sqlanywhere16\_java\_batik-util.jar:\_opt\_sqlanywhere16\_java\_batik-xml.jar:\_opt\_sqlanywhere16\_java\_pdf-transcoder.jar:\_opt\_sqlanywhere16\_java\_xerces_2_5_0.jar:\_opt\_sqlanywhere16\_java\_xml-apis-ext.jar:\_opt\_sqlanywhere16\_java\_xml-apis.jar:\_opt\_sqlanywhere16\_java\_dbdiff.jar:\_opt\_sqlanywhere16\_java\_diffutils-1.2.1.jar
+Providers/sqlanywhere1600/Provider=ianywhere.sa.plugin.SAPlugin
+Providers/sqlanywhere1600/ProviderId=sqlanywhere1600
+Providers/sqlanywhere1600/InitialLoadOrder=1
+#
+#
+#

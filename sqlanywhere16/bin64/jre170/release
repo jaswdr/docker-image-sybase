@@ -1,0 +1,6 @@
+JAVA_VERSION="1.7.0"
+OS_NAME="Linux"
+OS_VERSION="2.6"
+OS_ARCH="amd64"
+SOURCE=""
+BUILD_TYPE=commercial

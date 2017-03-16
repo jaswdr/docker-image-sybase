@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:ultralite"
+	xmlns:ul="urn:ultralite"
+	elementFormDefault="unqualified"
+	attributeFormDefault="unqualified">
+
+    <xs:element name="ulschema" type="ul:ulschemaType"/>
+
+    <xs:simpleType name="nonEmptyString">
+        <xs:restriction base="xs:string">
+	    <xs:minLength value="1"/>
+	    <xs:whiteSpace value="collapse"/>
+	</xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="optionsList">
+        <xs:restriction base="xs:string">
+	    <xs:enumeration value="dateformat"/>
+	    <xs:enumeration value="dateorder"/>
+	    <xs:enumeration value="max_hash_size"/>
+	    <xs:enumeration value="checksum_level"/>
+	    <xs:enumeration value="nearestcentury"/>
+	    <xs:enumeration value="precision"/>
+	    <xs:enumeration value="scale"/>
+	    <xs:enumeration value="timeformat"/>
+	    <xs:enumeration value="timestampformat"/>
+	    <xs:enumeration value="timestampincrement"/>
+	    <xs:enumeration value="timestampwithtimezoneformat"/>
+	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="collationType">
+        <xs:attribute name="name" type="ul:nonEmptyString" />
+	<xs:attribute name="case_sensitive" type="ul:yesNoType" default="no"/>
+	<xs:attribute name="utf8" type="ul:yesNoType" default="no"/>
+    </xs:complexType>
+
+    <xs:complexType name="certificatesType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="certificate" type="ul:nonEmptyString"/>
+	</xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="identityCertificateType">
+	<xs:simpleContent>
+	    <xs:extension base="xs:string">
+		<xs:attribute name='password' type='ul:nonEmptyString' />
+	    </xs:extension>
+	</xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="ulschemaType">
+	<xs:all>
+	    <xs:element name="collation" type="ul:collationType" minOccurs="0" maxOccurs="1"/>
+	    <xs:element name="certificates" type="ul:certificatesType" minOccurs="0" maxOccurs="1"/>
+	    <xs:element name="identity-certificate" type="ul:identityCertificateType" minOccurs="0" maxOccurs="1"/>
+	    <xs:element name="options" type="ul:optionsType" minOccurs="0" maxOccurs="1">
+	        <xs:key name="uniqueOptionNames">
+		    <xs:selector xpath="option"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+	    </xs:element>
+	    <xs:element name="tables" type="ul:tablesType" minOccurs="0" maxOccurs="1">
+	        <xs:key name="uniqueTableNames">
+		    <xs:selector xpath="table"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+		
+		<!-- make sure reftable exists -->
+		<xs:key name="ReferencedTable">
+		    <xs:selector xpath="table"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+		<xs:keyref name="ref_tbl" refer="ul:ReferencedTable">
+		    <xs:selector xpath="table/foreignkeys/foreignkey"/>
+		    <xs:field xpath="@reftable"/>
+		</xs:keyref>
+		
+	    </xs:element>
+	    <xs:element name="publications" type="ul:publicationsType" minOccurs="0" maxOccurs="1">
+	        <xs:key name="uniquePublicationNames">
+		    <xs:selector xpath="publication"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+	    </xs:element>
+	    <xs:element name="syncprofiles" type="ul:syncProfileType" minOccurs="0" maxOccurs="1">
+	    </xs:element>
+    	    <xs:element name="uldata" type="ul:ultableDataType" minOccurs="0" maxOccurs="1"/>
+	</xs:all>
+    </xs:complexType>
+    
+    <xs:complexType name="ultableDataType">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+	    <xs:element name="table">
+		<xs:complexType>
+		    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="row" type="ul:dataRowType"/>
+		    </xs:sequence>
+		    <xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="dataRowType">
+	<xs:anyAttribute namespace="##any" processContents="skip"/>
+    </xs:complexType>
+
+    <xs:complexType name="optionsType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="option">
+		<xs:complexType>
+		    <xs:attribute name="name" use="required" type="ul:optionsList" />
+		    <xs:attribute name="value" use="required" type="ul:nonEmptyString" />
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="yesNoType">
+	<xs:restriction base="xs:string">
+	    <xs:enumeration value="yes"/>
+	    <xs:enumeration value="no"/>
+	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="columnsType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="column">
+		<xs:complexType>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="oldname" type="ul:nonEmptyString" />
+		    <xs:attribute name="type" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="null" default="yes" type="ul:yesNoType"/>
+		    <xs:attribute name="default">
+		        <xs:simpleType>
+			    <xs:restriction base="xs:string">
+			        <xs:enumeration value="autoincrement"/>
+			        <xs:enumeration value="global_autoincrement"/>
+			        <xs:enumeration value="current_utc_timestamp"/>
+			        <xs:enumeration value="current_timestamp"/>
+			        <xs:enumeration value="current_time"/>
+			        <xs:enumeration value="current_date"/>
+			        <xs:enumeration value="new_uuid"/>
+			    </xs:restriction>
+			</xs:simpleType>
+		    </xs:attribute>
+		    
+		    <!-- only used for global autoincrement columns -->
+		    <xs:attribute name="partition_size" type="xs:nonNegativeInteger"/>
+		    
+		    <xs:attribute name="default_value" type="xs:string" />
+
+		    <!-- The following two attributes only used by UltraLiteJ: additional optional attributes for blobfile related columns -->
+		    <xs:attribute name="default_autofilename" type="xs:string" />
+		    <xs:attribute name="filename_col" type="xs:string" />
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="ascDescType">
+	<xs:restriction base="xs:string">
+	    <xs:enumeration value="asc"/>
+	    <xs:enumeration value="desc"/>
+	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="indexColumnType">
+	<xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+	<xs:attribute name="direction" default="asc" type="ul:ascDescType"/>
+    </xs:complexType>
+    
+    <xs:complexType name="primarykeyType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="primarycolumn">
+		<xs:complexType>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="direction" default="asc" type="ul:ascDescType" />
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+	<xs:attribute name="name" type="xs:string" />
+	<xs:attribute name="max_hash_size" type="ul:nonEmptyString" />
+    </xs:complexType>
+    
+    <xs:simpleType name="yesNoKeyType">
+        <xs:restriction base="xs:string">
+	    <xs:enumeration value="yes"/>
+	    <xs:enumeration value="no"/>
+	    <xs:enumeration value="key"/>
+	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="indexesType">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+	    <xs:element name="index">
+		<xs:complexType>
+		    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="indexcolumn" type="ul:indexColumnType">
+			</xs:element>
+		    </xs:sequence>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="unique" default="no" type="ul:yesNoKeyType" />
+		    <xs:attribute name="max_hash_size" type="ul:nonEmptyString" />
+		</xs:complexType>
+		<xs:key name="uniqueColNamesPerIndex">
+		    <xs:selector xpath=".//indexcolumn"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="foreignkeyMappingType">
+	<xs:attribute name="refcolumn" use="required" type="ul:nonEmptyString" />
+	<xs:attribute name="column" use="required" type="ul:nonEmptyString" />
+	<xs:attribute name="direction" default="asc" type="ul:ascDescType" />
+    </xs:complexType>
+    
+    <xs:complexType name="foreignkeysType">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+	    <xs:element name="foreignkey">
+		<xs:complexType>
+		    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="mapping" type="ul:foreignkeyMappingType">
+			</xs:element>
+		    </xs:sequence>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="reftable" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="nullable" type="ul:yesNoType"/>
+		    <xs:attribute name="check_on_commit" type="ul:yesNoType"/>
+		    <xs:attribute name="max_hash_size" type="ul:nonEmptyString" />
+		</xs:complexType>
+		<xs:key name="uniqueColNamesPerForeignKey">
+		    <xs:selector xpath=".//mapping"/>
+		    <xs:field xpath="@column"/>
+		</xs:key>
+		<xs:key name="uniqueRefColNamesPerForeignKey">
+		    <xs:selector xpath=".//mapping"/>
+		    <xs:field xpath="@refcolumn"/>
+		</xs:key>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="pubTableType">
+	<xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+	<xs:attribute name="predicate" default="" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:complexType name="publicationsType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="publication">
+		<xs:complexType>
+		    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="pubtable" type="ul:pubTableType">
+			</xs:element>
+		    </xs:sequence>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="tables" default="" type="xs:string" />
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="syncProfileType">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+	    <xs:element name="profile">
+		<xs:complexType>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="profile" default="" type="xs:string" />
+		</xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="tableSyncList">
+        <xs:restriction base="xs:string">
+	    <xs:enumeration value="changes"/>
+	    <xs:enumeration value="allrows"/>
+	    <xs:enumeration value="norows"/>
+	    <xs:enumeration value="download"/>
+	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="tablesType">
+	<xs:sequence minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="table">
+		<xs:complexType>
+		    <xs:all>
+			<xs:element name="columns" type="ul:columnsType" minOccurs="1" maxOccurs="1">
+			    <xs:key name="uniqueColumnNames">
+				<xs:selector xpath="column"/>
+				<xs:field xpath="@name"/>
+			    </xs:key>
+			</xs:element>
+			<xs:element name="primarykey" type="ul:primarykeyType" minOccurs="1" maxOccurs="1"> 
+			    <xs:key name="uniquePrimaryKeyColumns">
+			        <xs:selector xpath="primarycolumn"/>
+				<xs:field xpath="@name"/>
+			    </xs:key>
+			</xs:element>
+			
+			<xs:element name="indexes" type="ul:indexesType" minOccurs="0" maxOccurs="1" > 
+			    <xs:key name="uniqueIndexNamesPerTable">
+				<xs:selector xpath="index"/>
+				<xs:field xpath="@name"/>
+				<!-- disallow index named primary -->
+				<!-- <xs:field xpath="string(&quot;primary&quot;)"/> -->
+			    </xs:key>
+		        </xs:element>
+			<xs:element name="foreignkeys" type="ul:foreignkeysType" minOccurs="0" maxOccurs="1">
+			    <xs:key name="uniqueForeignKeyNames">
+			        <xs:selector xpath="foreignkey"/>
+				<xs:field xpath="@name"/>
+			    </xs:key>
+			</xs:element>
+		    </xs:all>
+		    <xs:attribute name="name" use="required" type="ul:nonEmptyString" />
+		    <xs:attribute name="oldname" type="ul:nonEmptyString" />
+		    <xs:attribute name="sync" default="changes" type="ul:tableSyncList" />
+		</xs:complexType>
+		
+	        <!--
+		     Constraints to make sure that specified PK, index, and
+		     FK cols exist (not refcolumns in FK)
+		-->
+		<xs:key name="ColumnNamesInTable">
+		    <xs:selector xpath="columns/column"/>
+		    <xs:field xpath="@name"/>
+		</xs:key>
+		<xs:keyref name="IndexColumnsMustExist" refer="ul:ColumnNamesInTable">
+		    <xs:selector xpath="indexes/index/indexcolumn" /> 
+		    <xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref name="PrimaryColumnsMustExist" refer="ul:ColumnNamesInTable">
+		    <xs:selector xpath="primarykey/primarycolumn" /> 
+		    <xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref name="ForeignColumnsInThisTableMustExist" refer="ul:ColumnNamesInTable">
+		    <xs:selector xpath="foreignkeys/foreignkey/mapping" /> 
+		    <xs:field xpath="@column"/>
+		</xs:keyref>
+		
+	    </xs:element>
+	</xs:sequence>
+    </xs:complexType>
+        
+</xs:schema>

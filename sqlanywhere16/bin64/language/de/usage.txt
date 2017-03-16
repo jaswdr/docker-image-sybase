@@ -1,0 +1,46 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+SQL Anywhere-Dienstprogramm für Dienste FULL_VERSION
+Syntax: dbsvc [Optionen] -d <Dienst>             Dienst löschen
+   oder  dbsvc [-q] -g <Dienst>                  Details eines Dienstes abrufen
+   oder  dbsvc [-q] -x <Dienst>                  Dienst stoppen
+   oder  dbsvc [-q] -u <Dienst>                  Dienst starten
+   oder  dbsvc [-q] -status <Dienst>             Status des Dienstes abrufen
+   oder  dbsvc [-q] -l                        Alle SQL Anywhere-Dienste auflisten
+   oder  dbsvc [Erstellungsoptionen] -w <Dienst> <Details>
+                                            Dienst erstellen
+
+Optionen (Groß- und Kleinschreibung wie angezeigt verwenden):
+	-cm		Diensterstellungsbefehl anzeigen (mit -g oder -l)
+        -q              Banner nicht drucken
+        -y              Dienst ohne Bestätigung löschen oder überschreiben
+Erstellungsoptionen (Groß- und Kleinschreibung wie angezeigt verwenden):
+        -a <Konto>       Zu verwendender Kontoname
+        -as             Daemon-Konto verwenden
+        -pr <Stufe>     Benutzerfreundliche Stufe verwenden
+        -rs <Abhängigkeiten>      Dienstabhängigkeiten
+	-od <ODBCINI>   Folgende ODBCINI-Datei für MobiLink-,
+			DBMLSync- und DBRemote-Dienste verwenden
+        -s <Start>    Startoption (Standard = Manual)
+                        Automatic, Manual
+        -rl <RUNLEVEL>  RUNLEVEL des Dienstes (Standardwert -rl 235)
+        -t <Typ>       Diensttyp (Standard = Standalone)
+                        Network, Personal, DBRemote, MobiLink, DBMLSync
+			dbns, rshost, rsoe
+
+Details: Programmdateioptionen
+	 Programmdateioptionen sind Argumente, die für Diensttyp verwendet werden können.
+	 Wenn keine Programmdatei angegeben ist, wird die aktuelle Umgebung verwendet.
+	 Im Folgenden sehen Sie ein Beispiel eines Netzwerkdienstes:
+
+	 dbsvc -as -t Netzwerk -w my_svc /opt/sybase/sqlanywhereSA_MAJOR/demo.db -n foo
+
+         Wenn -w verwendet wird, ist -a oder -as erforderlich.
+
+Hinweise:	 Option -o oder -ot ist erforderlich, wenn MobiLink, DBRemote oder DBMLsync
+	 als Dienst ausgeführt werden sollen.
+
+         ODBC-Umgebung muss für MobiLink-Dienste über das Benutzer-
+         Ausgangsverzeichnis oder Parameter -od eingerichtet werden
+

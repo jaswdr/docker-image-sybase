@@ -1,0 +1,148 @@
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+svc_t_iface_load()
+##################
+# get interface to tool 
+# Allow $1 to fall back on global variable DBSVC_TYPE
+{
+    local svc_tool_iface
+    if [ -n "$1" ]; then
+	svc_tool_iface=`tolower $1`
+    else
+	svc_tool_iface=`tolower ${DBSVC_TYPE}`
+    fi
+    . "${DBSVC_DIR}/dbsvc_scripts/svc_t_${svc_tool_iface}"
+}
+
+svc_t_iface_init()
+##################
+# $1 : DBSVC_TYPE
+{
+    svc_t_iface_load $1
+    svc_t_init
+}
+
+# Multiple instances of our tools may be running as services.
+# Need to take into account the command line given to each tool, 
+# to find the right one.
+# The following finds the pid of the process with the command line that 
+# matches the one we are looking for.
+# Returns:
+# sets PROCID and echoes back the pid of the process
+svc_t_getpid()
+##############
+{
+    # get our command line and "hash" it into something that
+    # matches the format of the commandline in /proc/<pid>/cmdline,
+    # with grep-unfriendly characters removed
+    local pcmdline
+    local CMD=`svc_t_toolname`
+    local TCMD=`echo "$SVC_TOOL_CMDLINE" | sed 's/ /\x00/g' | sed 's/-//g' | sed 's/\"//g'`
+    local pid=$PROCID
+    PROCID=
+    if [ ! -z "$pid" ]; then
+	# maybe we're here a second time ... check last time's PID       
+	PRFILE="/proc/"$pid"/cmdline"
+	if [ -r $PRFILE ]; then 
+	    pcmdline=`cat $PRFILE | sed 's/-//g' | sed 's/ //g' `
+	    RET=`echo $pcmdline | grep -v dbsvc | grep -v '/etc/init.d/SA_' | grep $TCMD 2>/dev/null`
+	    if [ "$RET" != "" ]; then
+		RET=`grep  $CMD $PRFILE`
+		if [ "$RET" != "" ]; then
+		    PROCID=$pid
+		fi
+	    fi
+	fi
+    fi
+    if [ "$PROCID" = "" ] && [ "$PIDFILEN" != "" ]; then
+      # check the pid specified in the PIDFILE first to see if we have a match
+      if [ -f "$PIDFILEN" ]; then
+        pid=`cat "$PIDFILEN"`
+	PRFILE="/proc/"$pid"/cmdline"
+	if [ -r $PRFILE ]; then 
+	    pcmdline=`cat $PRFILE | sed 's/-//g' | sed 's/ //g' `
+	    RET=`echo $pcmdline | grep -v dbsvc | grep -v '/etc/init.d/SA_' | grep $TCMD 2>/dev/null`
+	    if [ "$RET" != "" ]; then
+		RET=`grep  $CMD $PRFILE`
+		if [ "$RET" != "" ]; then
+		    PROCID=$pid
+		fi
+	    fi
+	fi
+      fi
+    fi
+    if [ "$PROCID" = "" ]; then
+      # need to do it the hard way - check all of the /proc/.../ directories
+      for i in `ls -U -p /proc | grep /`; do
+	PRFILE="/proc/"$i"cmdline"
+	if [ -r $PRFILE ]; then 
+	    pcmdline=`cat $PRFILE | sed 's/-//g' | sed 's/ //g' `
+	    RET=`echo $pcmdline | grep -v dbsvc | grep -v '/etc/init.d/SA_' | grep $TCMD 2>/dev/null`
+	    if [ "$RET" != "" ]; then
+		RET=`grep  $CMD $PRFILE`
+		if [ "$RET" != "" ]; then
+		    PROCID=`echo $i | awk -F "/" '{print $1}'`
+		    break
+		fi
+	    fi
+	fi
+      done
+    fi
+    echo $PROCID
+} 
+
+svc_t_process_cmdline_add_ud()
+##############################
+# in: cmdline
+# out: add -ud if not already there
+{
+    local MY_CMDLINE=$*
+
+    # add -ud if not there
+    local SAW_UD=0
+    while [ ! -z "$1" ]; do
+	case $1 in
+	    -ud )
+		SAW_UD=1 
+		;;
+	esac
+	shift
+    done
+
+    if [ $SAW_UD -eq 0 ]; then
+	MY_CMDLINE="$MY_CMDLINE -ud"
+    fi
+
+    echo "$MY_CMDLINE"
+}
+svc_t_status()
+##############
+# Most tools check status by verifying the process is still running
+{
+    local procid=`svc_t_getpid`
+
+    if [ -z "$procid" ]; then
+	false
+    else
+	true
+    fi
+    echo $?
+}
+
+svc_t_stopcmd()
+###############
+# Most tools stop by sending a HUP signal
+{
+    local procid=`svc_t_getpid`
+    [ -n "$procid" ] && kill -HUP ${procid}
+}
+
+svc_t_checkbinary()
+###################
+{
+    # some validation
+    [ ! -r `svc_t_toolpath` ] && output_msg "${INF_BINARYNOTFOUND}" # ${DBSVC_TYPE}
+}
+

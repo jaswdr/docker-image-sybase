@@ -1,0 +1,86 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+##Note to translator do not translate "SQL Anywhere", "$SERVICENAME" or "$DBSVC_TYPE"  on any occurrence within the file.
+
+#ERROR MESSAGES
+ERR_PERMMOD="You do not have permission to manage services."
+ERR_AWK="This tool requires the \"awk\" utility."
+ERR_GREP="This tool requires the \"grep\" utility."
+ERR_TAIL="This tool requires the \"tail\" utility."
+ERR_TR="This tool requires the \"tr\" utility."
+ERR_SED="This tool requires a more recent version of the \"sed\" utility."
+ERR_INVALIDCMD="Invalid command line."
+ERR_NOACCOUNT="No account information provided."
+ERR_NODELETE="Could not delete service: \$SERVICENAME." 
+
+##Note to translator do not translate "DBMLSync" or "DBRemote" on the next line
+ERR_REQDASHO="DBRemote and DBMLsync require -ot or -o to run as a service"
+ERR_REQDASHN="dbsvc requires that Personal and Network services specify -n to name the server"
+ERR_REQDASHZS="dbsvc requires that MobiLink services specify -zs to name the server"
+ERR_INVALIDSTARTUP="Invalid startup option"
+ERR_UNRECOGNIZED_OPTION="Unrecognized option"
+ERR_NOENVIRONMENT="Error: SQL Anywhere environment $SQLANYVAR not set."
+ERR_INVALIDTYPE="Invalid service type"
+ERR_NOSERVICENAME="Please specify service name"
+
+##Note to translator do not translate "/lib/lsb/init-functions" on the next line
+ERR_EXPECTINGFILES="This utility requires /lib/lsb/init-functions"
+
+##Note to translator do not translate "chkconfig" on the next line
+ERR_NOCHKCONFIG="This start type auto requires chkconfig utility"
+
+#INFORMATIONAL MESSAGES
+
+##Note to translator do not translate "$PREFIX$SERVICENAME" on the next line
+INF_CREATING="Creating SQL Anywhere service: \$SERVICENAME  File: \$PREFIX\$SERVICENAME"
+INF_NOSERVICE="No services found."
+
+INF_NOSERVICENAME="No service with name \"\$SERVICENAME\" found." 
+INF_NOACTION="No action requested."
+INF_NOFILEFORSERVICE="Warning: Database file does not exist"
+INF_NOUSER="Warning: Linux user does not exist"
+
+##Note to translator do not translate "ODBC.INI" on the next line
+INF_NOODBCINIEXIST="Warning: ODBC.INI does not exist. Services relying on a data source will fail."
+INF_WARNSVCWITHDASH="Warning: Your service name starts with a '-', is this what you intended?"
+INF_WARNINGDEPENDENT="Warning: Service dependent not found"
+
+##Note to translator do not translate "${TYPE}" on the next line
+INF_BINARYNOTFOUND="Warning: Executable required for service type \"\${DBSVC_TYPE}\" not installed in current environment"
+
+#Non-Utility Messages
+
+INF_STARTING="Starting SQL Anywhere \"${DBSVC_TYPE}\" service: $SERVICENAME"
+INF_STOPPING="Stopping SQL Anywhere \"${DBSVC_TYPE}\" service: $SERVICENAME"
+INF_NOTRUNNING="SQL Anywhere \"${DBSVC_TYPE}\" service $SERVICENAME not running."
+INF_RUNNING="SQL Anywhere \"${DBSVC_TYPE}\" service $SERVICENAME running."
+INF_CHECKING_OK="Checking SQL Anywhere service: $SERVICENAME running"
+INF_CHECKING_NF="Checking SQL Anywhere service: $SERVICENAME not running"
+INF_CHECKING_UNKNOWN="Checking SQL Anywhere service: unknown error"
+
+##Note to translator do not translate "{start|stop|restart|status}" on the next line
+INF_USAGE="Usage: $dbsvc {start|stop|restart|status}"
+INF_ALREADYRUNNING="SQL Anywhere service $SERVICENAME already running"
+
+
+#RPOMPT MESSAGES
+PRMPT_OVERWRITE="Do you want to overwrite service \"\$SERVICENAME\" "
+PRMPT_DELETE="Do you want to delete service \"\$SERVICENAME\" "
+
+# YES/NO Question
+MSG_PROMPT_YES_NO="[Y/n]: "
+MSG_PROMPT_NO_YES="[N/y]: "
+
+MSG_ANSWER_Yes="Yes"
+MSG_ANSWER_yes="yes"
+MSG_ANSWER_Y="Y"
+MSG_ANSWER_y="y"
+
+#COPYRIGHT and BANNER
+
+CPYRIGHT1="Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved."
+CPYRIGHT2=""
+CPYRIGHT3=""
+
+BANNER="SQL Anywhere Service Utility"

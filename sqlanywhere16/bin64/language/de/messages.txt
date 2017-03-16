@@ -1,0 +1,86 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+##Note to translator do not translate "SQL Anywhere", "$SERVICENAME" or "$DBSVC_TYPE"  on any occurrence within the file.
+
+#ERROR MESSAGES
+ERR_PERMMOD="Sie haben keine Berechtigung zum Verwalten von Diensten."
+ERR_AWK="Für dieses Tool ist das Dienstprogramm \"awk\" erforderlich."
+ERR_GREP="Für dieses Tool ist das Dienstprogramm \"grep\" erforderlich."
+ERR_TAIL="Für dieses Tool ist das Dienstprogramm \"tail\" erforderlich."
+ERR_TR="Für dieses Tool ist das Dienstprogramm \"tr\" erforderlich."
+ERR_SED="Sie benötigen eine neuere Version des Dienstprogramms \"sed\"."
+ERR_INVALIDCMD="Ungültige Befehlszeile."
+ERR_NOACCOUNT="Keine Kontoinformationen bereitgestellt."
+ERR_NODELETE="Dienst konnte nicht gelöscht werden: \$SERVICENAME."
+
+##Note to translator do not translate "DBMLSync" or "DBRemote" on the next line
+ERR_REQDASHO="Für DBRemote und DBMLsync ist -ot oder -o erforderlich, damit sie als Dienst laufen können"
+ERR_REQDASHN="dbsvc erfordert, dass Personal- und Netzwerkdienste -n zur Benennung des Servers angeben"
+ERR_REQDASHZS="Für dbsvc müssen MobiLink-Dienste die Option -zs angeben, um den Server zu benennen"
+ERR_INVALIDSTARTUP="Ungültige Startoption"
+ERR_UNRECOGNIZED_OPTION="Nicht erkannte Option"
+ERR_NOENVIRONMENT="Fehler: SQL Anywhere-Umgebungsvariable $SQLANYVAR nicht festgelegt"
+ERR_INVALIDTYPE="Ungültiger Diensttyp"
+ERR_NOSERVICENAME="Geben Sie einen Dienstnamen an"
+
+##Note to translator do not translate "/lib/lsb/init-functions" on the next line
+ERR_EXPECTINGFILES="Dieses Dienstprogramm erfordert /lib/lsb/init-functions"
+
+##Note to translator do not translate "chkconfig" on the next line
+ERR_NOCHKCONFIG="Dieser Starttyp erfordert das chkconfig-Dienstprogramm"
+
+#INFORMATIONAL MESSAGES
+
+##Note to translator do not translate "$PREFIX$SERVICENAME" on the next line
+INF_CREATING="SQL Anywhere-Dienste werden erstellt: \$SERVICENAME  Datei: \$PREFIX\$SERVICENAME"
+INF_NOSERVICE="Keine Dienste gefunden."
+
+INF_NOSERVICENAME="Kein Dienst mit dem Namen \"\$SERVICENAME\" gefunden."
+INF_NOACTION="Keine Aktion erforderlich."
+INF_NOFILEFORSERVICE="Warnung: Datenbankdatei ist nicht vorhanden"
+INF_NOUSER="Warnung: Linux-Benutzer ist nicht vorhanden"
+
+##Note to translator do not translate "ODBC.INI" on the next line
+INF_NOODBCINIEXIST="Warnung: ODBC.INI ist nicht vorhanden. Dienste, die eine Datenquelle erfordern, schlagen fehl."
+INF_WARNSVCWITHDASH="Warnung: Ihr Dienstname startet mit einem '-'. Ist das so gewünscht?"
+INF_WARNINGDEPENDENT="Warnung: Abhängiger Dienst nicht gefunden"
+
+##Note to translator do not translate "${TYPE}" on the next line
+INF_BINARYNOTFOUND="Warnung: Erforderliche Programmdatei für Diensttyp \"\${DBSVC_TYPE}\" in der aktuellen Umgebung nicht installiert"
+
+#Non-Utility Messages
+
+INF_STARTING="SQL Anywhere-Dienst \"${DBSVC_TYPE}\" wird gestartet: $SERVICENAME"
+INF_STOPPING="SQL Anywhere-Dienst \"${DBSVC_TYPE}\" wird gestoppt: $SERVICENAME"
+INF_NOTRUNNING="SQL Anywhere-Dienst \"${DBSVC_TYPE}\" $SERVICENAME läuft nicht."
+INF_RUNNING="SQL Anywhere-Dienst \"${DBSVC_TYPE}\" $SERVICENAME läuft."
+INF_CHECKING_OK="SQL Anywhere-Dienst wird überprüft: $SERVICENAME läuft"
+INF_CHECKING_NF="SQL Anywhere-Dienst wird überprüft: $SERVICENAME läuft nicht"
+INF_CHECKING_UNKNOWN="SQL Anywhere-Dienst wird überprüft: unbekannter Fehler"
+
+##Note to translator do not translate "{start|stop|restart|status}" on the next line
+INF_USAGE="Syntax: $dbsvc {start|stop|restart|status}"
+INF_ALREADYRUNNING="SQL Anywhere-Dienst $SERVICENAME läuft bereits"
+
+
+#RPOMPT MESSAGES
+PRMPT_OVERWRITE="Möchten Sie den Dienst \"\$SERVICENAME\" überschreiben? "
+PRMPT_DELETE="Möchten Sie den Dienst \"\$SERVICENAME\" löschen? "
+
+# YES/NO Question
+MSG_PROMPT_YES_NO="[J/n]: "
+MSG_PROMPT_NO_YES="[N/j]: "
+
+MSG_ANSWER_Yes="Ja"
+MSG_ANSWER_yes="ja"
+MSG_ANSWER_Y="J"
+MSG_ANSWER_y="j"
+
+#COPYRIGHT and BANNER
+
+CPYRIGHT1="Copyright (c) 2013 SAP AG oder ein SAP-Konzernunternehmen. Alle Rechte vorbehalten."
+CPYRIGHT2=""
+CPYRIGHT3=""
+
+BANNER="SQL Anywhere-Dienstprogramm für Dienste"

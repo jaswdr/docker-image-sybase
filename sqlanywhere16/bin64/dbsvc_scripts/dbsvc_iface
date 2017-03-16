@@ -1,0 +1,135 @@
+#!/bin/sh 
+
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+START_DAEMON=start_daemon
+KILLPROC=killproc
+PIDOFPROC=pidofproc
+LOG_SUCCESS_MSG=log_success_msg
+LOG_FAILURE_MSG=log_failure_msg
+LOG_WARNING_MSG=log_warning_msg
+
+dbsvc_iface_getiface()
+######################
+# We rely on lsb; the others are placeholders that are currently unused
+{
+    if [ -r "/lib/lsb/init-functions" ]; then
+	echo "lsb"
+    elif [ -r "/etc/rc.status" ]; then
+	echo "suse"
+    elif [ -r "/etc/init.d/functions" ]; then
+	echo "rh"
+    fi
+}
+
+dbsvc_iface_init()
+##################
+# can pass optional $1 to force lsb|rh|suse
+{
+    RUNLEVEL="235"
+    [ -z "$PRIORITY" ] && PRIORITY="+00"
+    STARTUP="Manual"
+    SVCDIR=/etc/init.d
+    PREFIX=${SVCDIR}/${SVCNAME_PFX}
+
+    dbsvc_iface_load $1
+}
+
+dbsvc_iface_load()
+##################
+# Allow $1 to override which interface functions we load
+{
+    if [ -n "$1" ]; then
+	SVC_IFACE=$1
+    else
+	SVC_IFACE=`dbsvc_iface_getiface`
+    fi
+
+    # Load common init-functions (only LSB currently used)
+    if [ -r "/lib/lsb/init-functions" ]; then
+	. /lib/lsb/init-functions
+    elif [ -r "/etc/rc.status" ]; then
+        . /etc/rc.status
+    elif [ -r "/etc/init.d/functions" ]; then
+        . /etc/init.d/functions
+    fi
+    # Load interface-specific procdures (only LSB currently used)
+    if [ -r "${DBSVC_DIR}/dbsvc_scripts/dbsvc_iface_${SVC_IFACE}" ]; then
+	. "${DBSVC_DIR}/dbsvc_scripts/dbsvc_iface_${SVC_IFACE}"
+	dbsvc_iface_init_${SVC_IFACE}
+    fi
+    # Need to override aliases on RedHat
+    if is_redhat || is_redflag ; then
+	. "${DBSVC_DIR}/dbsvc_scripts/dbsvc_iface_rh"
+    fi
+
+    # Check whether we have chkconfig or update-rc.d for installing services
+    HAS_CHKCONFIG=0
+    HAS_UPDATE_RC=0
+
+    CHKCONFIG_BIN=/sbin/chkconfig
+    if [ -r $CHKCONFIG_BIN ]; then
+	HAS_CHKCONFIG=1
+    else
+	# Try PATH
+	CHKCONFIG_BIN=`/bin/which chkconfig 2>/dev/null`
+	if [ -n $CHKCONFIG_BIN ] && [ -r "$CHKCONFIG_BIN" ]; then
+	    HAS_CHKCONFIG=1
+	else
+	    CHKCONFIG_BIN=""
+	fi
+    fi
+    UPDATE_RC_BIN=/usr/sbin/update-rc.d
+    if [ -r "$UPDATE_RC_BIN" ]; then
+	HAS_UPDATE_RC=1
+    else
+	# Try PATH
+	UPDATE_RC_BIN=`/bin/which update-rc.d 2>/dev/null`
+	if [ -n $UPDATE_RC_BIN ] && [ -r "$UPDATE_RC_BIN" ]; then
+	    HAS_UPDATE_RC=1
+	else
+	    UPDATE_RC_BIN=""
+	fi
+    fi
+}
+
+dbsvc_iface_installsvc()
+########################
+{
+    if [ ${HAS_CHKCONFIG:-0} -ne 0 ]; then
+	$CHKCONFIG_BIN --add $SVCNAME_PFX$SERVICENAME > /dev/null
+	$CHKCONFIG_BIN --level $RUNLEVEL $SVCNAME_PFX$SERVICENAME on > /dev/null
+    elif [ ${HAS_UPDATE_RC:-0} -ne 0 ]; then
+	$UPDATE_RC_BIN $SVCNAME_PFX$SERVICENAME start 60 $RUNLEVELS . stop 80 $STOPLEVELS .
+    fi
+}
+
+
+dbsvc_iface_uninstallsvc()
+##########################
+{
+    if [ ${HAS_CHKCONFIG:-0} -ne 0 ]; then
+	$CHKCONFIG_BIN $SVCNAME_PFX$SERVICENAME off > /dev/null
+	$CHKCONFIG_BIN --del $SVCNAME_PFX$SERVICENAME > /dev/null
+    elif [ ${HAS_UPDATE_RC:-0} -ne 0 ]; then
+	$UPDATE_RC_BIN -f $SVCNAME_PFX$SERVICENAME remove 
+    fi
+}
+
+dbsvc_iface_checkdeletedsvc()
+#############################
+{
+    if [ ${HAS_CHKCONFIG:-0} -ne 0 ]; then
+	ISTHERE=`$CHKCONFIG_BIN --list | grep $SVCNAME_PFX$SERVICENAME`
+	if [ -r $SVCNAME_PFX$SERVICENAME ] || [ "$ISTHERE" != "" ]; then
+	    output_msg "${ERR_NODELETE}" # $SERVICENAME
+	fi
+    elif [ ${HAS_UPDATE_RC:-0} -ne 0 ]; then
+	if [ -r $SVCNAME_PFX$SERVICENAME ]; then
+	    output_msg "${ERR_NODELETE}" # $SERVICENAME
+	fi
+    fi
+}
+

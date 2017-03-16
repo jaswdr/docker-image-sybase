@@ -1,0 +1,46 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company.All rights reserved.
+# ***************************************************************************
+SQL Anywhere サービスユーティリティ FULL_VERSION
+使用法 :dbsvc [オプション] -d <svc>             サービスの削除
+   または  dbsvc [-q] -g <svc>                  サービスの詳細の取得
+   または  dbsvc [-q] -x <svc>                  サービスの停止
+   または  dbsvc [-q] -u <svc>                  サービスの開始
+   または  dbsvc [-q] -status <svc>             サービスのステータスの取得
+   または  dbsvc [-q] -l                        すべての SQL Anywhere サービスの表示
+   または  dbsvc [作成オプション] -w <svc> <詳細>
+                                            サービスの作成
+
+オプション (次に示すように、特定の大文字または小文字を使用します) :
+	-cm		サービス作成コマンドを表示します (-g または -l を使用)
+        -q              バナーを出力しません
+        -y              確認せずにサービスを削除または上書きします
+作成オプション (次に示すように、特定の大文字または小文字を使用します) :
+-a <acct>       使用するアカウント名
+        -as             デーモンアカウントを使用
+        -pr <level>     ナイスレベルを使用
+        -rs <deps>      サービス依存性
+	-od <ODBCINI>   Mobile Link、DBMLSync および DBRemote サービスに
+			次の ODBCINI ファイルを使用
+        -s <startup>    起動オプション (デフォルトは Manual)
+                        Automatic、Manual
+        -rl <RUNLEVEL>  サービスの RUNLEVEL (デフォルトは -rl 235)
+        -t <type>       サービスのタイプ (デフォルトは Standalone)
+                        Network、Personal、DBRemote、MobiLink、DBMLSync
+			dbns、rshost、rsoe
+
+詳細 :実行プログラムオプション
+	 実行プログラムオプションは、サービスのタイプに適用できる引数です。
+	 実行プログラムが指定されていない場合は、現在の環境が使用されます。
+	 次は、Network サービスの例です。
+
+	 	 dbsvc -as -t Network -w my_svc /opt/sybase/sqlanywhereSA_MAJOR/demo.db -n foo
+
+                  -w を使用する場合は、-a または -as のいずれかが必要です。
+
+注意	 MobiLink、DBRemote、 DBMLsync をサービスとして実行するには、
+	 -o または -ot オプションが必要です。
+
+                  ユーザの
+ホームディレクトリまたは -od オプション経由による MobiLink サービスのための ODBC 環境を設定する必要があります。
+

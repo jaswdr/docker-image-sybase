@@ -1,0 +1,18 @@
+###########################################################################
+#
+#                SAP JVM JIT Compiler Exclude List
+#
+###########################################################################
+
+#
+# format:
+# 
+#   exclude <package 1>/<package 2>/.../<package N>/<class name> <method name>
+#
+# example:
+#
+#   exclude com/sun/tools/javac/code/SymbolMethodSymbol overrides
+#
+
+# For new entries, please provide date, SAP JVM Bug ID, SAP note, Sun Bug ID
+

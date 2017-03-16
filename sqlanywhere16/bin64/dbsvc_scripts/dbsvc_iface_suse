@@ -1,0 +1,16 @@
+#!/bin/sh 
+
+# iAnywhere Solutions, Inc. One Sybase Drive, Dublin, CA 94568, USA
+# Copyright (c) 2001-2008, iAnywhere Solutions, Inc. Portions copyright (c)
+# 1988-2008, Sybase, Inc. All rights preserved. All unpublished rights reserved.
+
+dbsvc_iface_init_suse()
+#######################
+{
+    RUNLEVEL="35"
+    [ -z "$PRIORITY" ] && PRIORITY="+00"
+    STARTUP="Manual"
+    SVCDIR=/etc/init.d
+    PREFIX=${SVCDIR}/${SVCNAME_PFX}
+}
+

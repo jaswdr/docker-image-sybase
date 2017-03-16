@@ -1,0 +1,45 @@
+# ***************************************************************************
+# Copyright (c) 2013 SAP AG or an SAP affiliate company. All rights reserved.
+# ***************************************************************************
+SQL Anywhere Service Utility FULL_VERSION
+Usage: dbsvc [options] -d <svc>             delete a service
+   or  dbsvc [-q] -g <svc>                  get details of a service
+   or  dbsvc [-q] -x <svc>                  stop service
+   or  dbsvc [-q] -u <svc>                  start service
+   or  dbsvc [-q] -status <svc>             get status of service
+   or  dbsvc [-q] -l                        list all SQL Anywhere services
+   or  dbsvc [creation options] -w <svc> <Details>
+                                            create service
+
+Options (use specified upper- or lower-case letter, as shown):
+	-cm		display service creation command (with -g or -l)
+        -q              do not print banner
+        -y              delete or overwrite service without confirmation
+Creation options (use specified upper- or lower-case letter, as shown):
+        -a <acct>       account name to use
+        -as             use daemon account
+        -pr <level>     use nice level 
+        -rs <deps>      service dependencies
+	-od <ODBCINI>   use the following ODBCINI file for MobiLink, 
+			DBMLSync and DBRemote services
+        -s <startup>    startup option (default Manual)
+                        Automatic, Manual
+        -rl <RUNLEVEL>  RUNLEVEL of Service  (default -rl 235)
+        -t <type>       type of service (default Standalone)
+                        Network, Personal, DBRemote, MobiLink, DBMLSync
+			dbns, rshost, rsoe
+
+Details: executable-options
+	 executable-options are arguments applicable to type of service.  
+	 If no executable is provided, current environment will be used.
+	 The following is an example of Network service
+
+	 dbsvc -as -t Network -w my_svc /opt/sybase/sqlanywhereSA_MAJOR/demo.db -n foo
+
+         One of -a and -as is required if -w is used.
+
+Notes:	 MobiLink, DBRemote and DBMLsync require -o or -ot option 
+	 to run as a service
+
+         ODBC Environment needs to be set up for MobiLink Services via user's 
+         home directory or -od option 
