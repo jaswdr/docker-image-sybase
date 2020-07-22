@@ -15,4 +15,6 @@ Environment variable | Default value
 SYBASE_USER | sa
 SYBASE_PASSWORD | password
 
+> You can use both `sa` and `guest` users to connect to `guest` database
+
 See more about this image at [Docker Hub](https://hub.docker.com/r/jaschweder/sybase)
