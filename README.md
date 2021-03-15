@@ -1,6 +1,6 @@
 # SAP Sybase Anywhere 16
 
-#### Getting started
+## Getting started
 
 ```
 docker run jaschweder/sybase -p 2638:2638
@@ -8,27 +8,22 @@ docker run jaschweder/sybase -p 2638:2638
 
 Then connect to hostname `localhost` or `127.0.0.1` at port `2638`
 
-#### Environment Variables
+## Users
 
-##### Guest user
-Environment variable | Default value
---- | --- 
-SYBASE_USER | guest 
-SYBASE_PASSWORD | guest1234 
-SYBASE_DB | guest
+### Guest
 
-##### Admin user
-Environment variable | Default value
---- | --- 
-SYBASE_USER | sa
-SYBASE_PASSWORD | sql
+Username: `guest`
+Password: `guest1234`
+Database: `guest`
 
-##### DBA user
-Environment variable | Default value
---- | --- 
-SYBASE_USER | dba
-SYBASE_PASSWORD | sql
+### Admin
 
-> You can use both `sa` and `guest` users to connect to `guest` database
+Username: `sa`
+Password: `sql`
+
+### DBA
+
+Username: `dba`
+Password: `sql`
 
 See more about this image at [Docker Hub](https://hub.docker.com/r/jaschweder/sybase)
